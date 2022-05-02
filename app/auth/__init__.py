@@ -170,6 +170,7 @@ def delete_user(user_id):
     flash('User Deleted', 'success')
     return redirect(url_for('auth.browse_users'), 302)
 
+#location management
 
 
 

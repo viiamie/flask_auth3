@@ -1,14 +1,14 @@
 import logging
 
 from app import db
-from app.db.models import User, Song
+from app.db.models import User, Location
 from faker import Faker
 
 def test_adding_user(application):
     log = logging.getLogger("myApp")
     with application.app_context():
         assert db.session.query(User).count() == 0
-        assert db.session.query(Song).count() == 0
+        assert db.session.query(Location).count() == 0
         #showing how to add a record
         #create a record
         user = User('keith@webizly.com', 'testtest')
@@ -24,22 +24,22 @@ def test_adding_user(application):
         #asserting that the user retrieved is correct
         assert user.email == 'keith@webizly.com'
         #this is how you get a related record ready for insert
-        user.songs= [Song("test","smap"),Song("test2","te")]
+        user.locations= [Location("test","map","200","1000"),Location("test2","mp","300","2000")]
         #commit is what saves the songs
         db.session.commit()
-        assert db.session.query(Song).count() == 2
-        song1 = Song.query.filter_by(title='test').first()
-        assert song1.title == "test"
+        assert db.session.query(Location).count() == 2
+        location1 = Location.query.filter_by(title='test').first()
+        assert location1.title == "test"
         #changing the title of the song
-        song1.title = "SuperSongTitle"
+        location1.title = "SuperLocationTitle"
         #saving the new title of the song
         db.session.commit()
-        song2 = Song.query.filter_by(title='SuperSongTitle').first()
-        assert song2.title == "SuperSongTitle"
+        location2 = Location.query.filter_by(title='SuperLocationTitle').first()
+        assert location2.title == "SuperLocationTitle"
         #checking cascade delete
         db.session.delete(user)
         assert db.session.query(User).count() == 0
-        assert db.session.query(Song).count() == 0
+        assert db.session.query(Location).count() == 0
 
 
 
