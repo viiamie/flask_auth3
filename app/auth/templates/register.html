@@ -8,143 +8,131 @@
             {{ render_form(form) }}
         </div>
         <div id="message" class="col-5">
-            <div id="letter" class="red">
-                Has lower case letter
-                <div class="progress">
-                    <div id="p-bar" class="progress-bar" style="width: 0%" role="progressbar" aria-valuenow="0"
-                         aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
+        <div class="progress">
+            <div id="pbar" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        password must contain the following:
+            <div id="letter" class="invalid">
+               a lower case letter
             </div>
-
+            <div id="capital" class="invalid">
+               a capital letter
+            </div>
+            <div id="number" class="invalid">
+               a number
+            </div>
+            <div id="character" class="invalid">
+               a special character (@$!%*#?&)
+            </div>
+            <div id="length" class="invalid">
+               6 or more characters
+            </div>
+        </div>
         </div>
     </div>
-    <style>
-        .invalid {
-            color: red;
+
+ <style>
+    .invalid {
+        color: red;
+    }
+
+     .valid {
+        color: green;
+    }
+</style>
+
+<script>
+
+    let pswdField = document.getElementById("password");
+    let message = document.getElementById("message");
+    let letter = document.getElementById("letter");
+    let capital = document.getElementById("capital");
+    let number = document.getElementById("number");
+    let character = document.getElementById("character");
+    let length = document.getElementById("length");
+
+    let lowerCaseLetters = /[a-z]/g;
+    let upperCaseLetters = /[A-Z]/g;
+    let numbers = /[0-9]/g;
+    let characters = /[@$!%*#?&]/g;
+
+    let lowercase = 0;
+    let uppercase = 0;
+    let nums = 0;
+    let chars = 0;
+    let len = 0;
+
+    pswdField.onfocus = function() {
+        message.style.display = "block";
+    }
+    pswdField.onblur = function() {
+        message.style.display = "none";
+    }
+
+    pswdField.onkeyup = function() {
+        let progressBar = document.getElementById("pbar");
+
+        if (pswdField.value.match(lowerCaseLetters)) {
+            letter.classList.remove("invalid");
+            letter.classList.add("valid");
+            lowercase = 1;
+        } else {
+            letter.classList.remove("valid");
+            letter.classList.add("invalid");
+            lowercase = 0;
         }
 
-        .valid {
-            color: green;
-        }
-    </style>
-
-
-    <script>
-        var passwordField = document.getElementById("password");
-        var letter = document.getElementById("letter");
-        let lowerCase = new Observable(0);
-        let upperCase = new Observable(0);
-        let specialCharacter = new Observable(0);
-        let passwordLength = new Observable(0);
-
-        let id = "p-bar";
-
-        function Observable(v) {
-            this.value = v;
-
-            this.valueChangedCallback = null;
-
-            this.setValue = function (v) {
-                if (this.value !== v) {
-                    this.value = v;
-                    this.raiseChangedEvent(v);
-                }
-            };
-
-            this.getValue = function () {
-                return this.value;
-            };
-
-            this.onChange = function (callback) {
-                this.valueChangedCallback = callback;
-            };
-
-            this.raiseChangedEvent = function (v) {
-                if (this.valueChangedCallback) {
-                    this.valueChangedCallback(v);
-                }
-            };
+        if(pswdField.value.match(upperCaseLetters)) {
+            capital.classList.remove("invalid");
+            capital.classList.add("valid");
+            uppercase = 1;
+        } else {
+            capital.classList.remove("valid");
+            capital.classList.add("invalid");
+            uppercase = 0;
         }
 
-        function setProgressBarWidth(id,change) {
-            let progress_bar = document.getElementById(id);
-            let progressBarCurrentWidth_string = progress_bar.style.width.toString()
-            let width_current_value = parseInt(progressBarCurrentWidth_string.substring(0, progressBarCurrentWidth_string.length - 1));
-
-            let width_string_new_value = width_current_value + change;
-            console.log(width_string_new_value);
-            progress_bar.style.width = width_string_new_value.toString().concat("%");
+        if(pswdField.value.match(numbers)) {
+            number.classList.remove("invalid");
+            number.classList.add("valid");
+            nums = 1;
+        } else {
+            number.classList.remove("valid");
+            number.classList.add("invalid");
+            nums = 0;
         }
 
-        lowerCase.onChange(function (v) {
-
-            if(v === 0) {
-                setProgressBarWidth(id,-25)
-            } else {
-                setProgressBarWidth(id,+25)
-            }
-        });
-
-        passwordLength.onChange(function (v) {
-
-            if(v === 0) {
-                setProgressBarWidth(id,-25)
-            } else {
-                setProgressBarWidth(id,+25)
-            }
-        });
-
-        upperCase.onChange(function (v) {
-
-            if(v === 0) {
-                setProgressBarWidth(id,-25)
-            } else {
-                setProgressBarWidth(id,+25)
-            }
-        });
-
-        specialCharacter.onChange(function (v) {
-
-            if(v === 0) {
-                setProgressBarWidth(id,-25)
-            } else {
-                setProgressBarWidth(id,+25)
-            }
-        });
-
-
-        passwordField.onkeyup = function () {
-            // Validate lowercase letters
-            let lowerCaseLetters = /[a-z]/g;
-            let upperCaseLetters = /[A-Z]/g;
-            let specialCharacters = /[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi;
-            let passwordMinLength = 6;
-
-            if(passwordField.value.length >= passwordMinLength) {
-                passwordLength.setValue(1);
-            } else {
-                passwordLength.setValue(0);
-            }
-
-            if (passwordField.value.match(lowerCaseLetters)) {
-                lowerCase.setValue(1);
-            } else {
-                lowerCase.setValue(0);
-            }
-            if (passwordField.value.match(upperCaseLetters)) {
-                upperCase.setValue(1);
-            } else {
-                upperCase.setValue(0);
-            }
-            if (passwordField.value.match(specialCharacters)) {
-                specialCharacter.setValue(1);
-            } else {
-                specialCharacter.setValue(0);
-            }
-
+        if(pswdField.value.match(characters)) {
+            character.classList.remove("invalid");
+            character.classList.add("valid");
+            chars = 1;
+        } else {
+            character.classList.remove("valid");
+            character.classList.add("invalid");
+            chars = 0;
         }
 
+        if(pswdField.value.length >= 6) {
+            length.classList.remove("invalid");
+            length.classList.add("valid");
+            len = 1;
+        } else {
+            length.classList.remove("valid");
+            length.classList.add("invalid");
+            len = 0;
+        }
 
-    </script>
+        let count = (lowercase + uppercase + nums + chars + len);
+        if (count === 0) {
+            progressBar.style.width = "0%";
+        } else if (count === 5) {
+            progressBar.style.width = "100%"
+        } else {
+            let new_pbar_width = (count * 20) + 1;
+            progressBar.style.width =  (new_pbar_width.toString()).concat("%");
+        }
+    }
+
+</script>
 
 {% endblock %}
