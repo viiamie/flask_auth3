@@ -8,8 +8,7 @@
     {% block content %}
         <a href="{{ url_for("map.location_upload") }}" class="btn col-3 mb-5 btn-info" role="button">Upload Locations</a>
         <h2>Browse: Locations</h2>
-        {{ render_table(data, show_actions=True, responsive=True, responsive_class='table-responsive-sm', model=Location,
-            view_url=view_url,
+        {{ render_table(data, show_actions=True, responsive=True, responsive_class='table-responsive-sm', model=Location
             edit_url=edit_url,
             delete_url=delete_url,
             new_url=add_url) }}

@@ -17,21 +17,21 @@ from flask import Response
 map = Blueprint('map', __name__, template_folder='templates')
 
 @map.route('/locations', methods=['GET'], defaults={"page": 1})
-@map.route('/locations/<int:page>', methods=['POST', 'GET'])
+@map.route('/locations/<int:page>', methods=['GET'])
 def browse_locations(page):
     page = page
     per_page = 10
     pagination = Location.query.paginate(page, per_page, error_out=False)
     data = pagination.items
-    view_url = ('map.retrieve_location', [('location_id', ':id')])
     add_url = url_for('map.add_location')
     edit_url = ('map.edit_locations', [('location_id', ':id')])
     delete_url = ('map.delete_location', [('location_id', ':id')])
 
     current_app.logger.info("Browse page loading")
+
     try:
-        return render_template('browse_locations_datatables.html', data=data, pagination=pagination,
-                               view_url=view_url, add_url=add_url, edit_url=edit_url, delete_url=delete_url, Location=Location)
+        return render_template('browse_locations.html', add_url=add_url, edit_url=edit_url, delete_url=delete_url,
+                           data=data, Location=Location, record_type="Locations", pagination=pagination)
     except TemplateNotFound:
         abort(404)
 
