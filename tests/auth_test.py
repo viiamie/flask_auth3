@@ -1,4 +1,8 @@
-"""This test the homepage"""
+"""This tests the homepage"""
+
+import pytest
+from flask import session
+from app.db.models import User
 
 def test_request_main_menu_links(client):
     """This makes the index page"""

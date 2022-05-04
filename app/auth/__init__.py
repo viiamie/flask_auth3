@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, flash,current_app
+from flask import Blueprint, render_template, redirect, url_for, flash, current_app
 from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash
 
@@ -169,9 +169,5 @@ def delete_user(user_id):
     db.session.commit()
     flash('User Deleted', 'success')
     return redirect(url_for('auth.browse_users'), 302)
-
-#location management
-
-
 
 
