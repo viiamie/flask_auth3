@@ -30,9 +30,8 @@ def browse_locations(page):
 
     current_app.logger.info("Browse page loading")
     try:
-        return render_template('browse_locations_datatables.html', add_url=add_url, edit_url=edit_url, delete_url=delete_url,
-                               view_url=view_url, data=data, Location=Location, record_type="Locations",
-                               pagination=pagination)
+        return render_template('browse_locations_datatables.html', data=data, pagination=pagination,
+                               view_url=view_url, add_url=add_url, edit_url=edit_url, delete_url=delete_url, Location=Location)
     except TemplateNotFound:
         abort(404)
 
@@ -42,7 +41,7 @@ def browse_locations_datatables():
     data = Location.query.all()
 
     try:
-        return render_template('browse_locations_datatables.html',data=data)
+        return render_template('browse_locations_datatables.html', data=data)
     except TemplateNotFound:
         abort(404)
 
@@ -84,7 +83,7 @@ def location_upload():
         current_user.locations = list_of_locations
         db.session.commit()
 
-        return redirect(url_for('map.browse_locations_datatables'))
+        return redirect(url_for('map.browse_locations'))
 
     try:
         return render_template('upload_locations.html', form=form)
@@ -113,7 +112,7 @@ def edit_locations(location_id):
        db.session.commit()
        flash('Location Edited Successfully', 'success')
        current_app.logger.info("edited a location")
-       return redirect(url_for('map.browse_locations_datatables'))
+       return redirect(url_for('map.browse_locations'))
    return render_template('location_edit.html', form=form)
 
 
@@ -129,10 +128,10 @@ def add_location():
            db.session.add(location)
            db.session.commit()
            flash('Congratulations, you just added a new location', 'success')
-           return redirect(url_for('map.browse_locations_datatables'))
+           return redirect(url_for('map.browse_locations'))
        else:
            flash('Location Already Exists')
-           return redirect(url_for('map.browse_locations_datatables'))
+           return redirect(url_for('map.browse_locations'))
    return render_template('location_new.html', form=form)
 
 
@@ -143,4 +142,4 @@ def delete_location(location_id):
    db.session.delete(location)
    db.session.commit()
    flash('Location Deleted', 'success')
-   return redirect(url_for('map.browse_locations_datatables'), 302)
+   return redirect(url_for('map.browse_locations'), 302)
